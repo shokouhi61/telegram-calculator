@@ -3,93 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ماشین حساب</title>
+    <title>صرافی درام آنلاین</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --bg-color: var(--tg-theme-bg-color, #f4f4f9);
-            --text-color: var(--tg-theme-text-color, #222);
-            --btn-bg: var(--tg-theme-button-color, #0088cc);
+            --text-color: var(--tg-theme-text-color, #222222);
+            --btn-color: var(--tg-theme-button-color, #0088cc);
             --btn-text: var(--tg-theme-button-text-color, #ffffff);
-            --sec-bg: var(--tg-theme-secondary-bg-color, #ffffff);
+            --card-bg: var(--tg-theme-secondary-bg-color, #ffffff);
+            --hint-color: var(--tg-theme-hint-color, #888888);
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
-        }
-        .calc {
-            background-color: var(--sec-bg);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-            width: 280px;
-        }
-        #display {
-            width: 100%;
-            height: 55px;
-            font-size: 26px;
-            text-align: left;
-            margin-bottom: 15px;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 8px;
-            background: var(--bg-color);
-            color: var(--text-color);
+            padding: 15px;
             box-sizing: border-box;
         }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        button {
-            height: 50px;
-            font-size: 20px;
-            font-weight: bold;
-            border: none;
-            border-radius: 10px;
-            background: var(--bg-color);
+
+        h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: var(--btn-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: var(--hint-color);
+            margin-bottom: 4px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: var(--bg-color);
             color: var(--text-color);
-            cursor: pointer;
+            font-size: 16px;
+            box-sizing: border-box;
         }
-        button:active { opacity: 0.7; }
-        button.op { background: var(--btn-bg); color: var(--btn-text); }
-        button.eq { background: #34c759; color: white; grid-column: span 2; }
-        button.c { background: #ff3b30; color: white; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--btn-color);
+            color: var(--btn-text);
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background: var(--card-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            border: 1px solid transparent;
+        }
+
+        .tab.active {
+            border-color: var(--btn-color);
+            color: var(--btn-color);
+        }
     </style>
 </head>
 <body>
-<div class="calc">
-    <input type="text" id="display" readonly value="0">
-    <div class="grid">
-        <button class="c" onclick="c()">C</button>
-        <button class="op" onclick="a('/')">÷</button>
-        <button class="op" onclick="a('*')">×</button>
-        <button class="op" onclick="del()">⌫</button>
-        <button onclick="a('7')">7</button><button onclick="a('8')">8</button><button onclick="a('9')">9</button>
-        <button class="op" onclick="a('-')">-</button>
-        <button onclick="a('4')">4</button><button onclick="a('5')">5</button><button onclick="a('6')">6</button>
-        <button class="op" onclick="a('+')">+</button>
-        <button onclick="a('1')">1</button><button onclick="a('2')">2</button><button onclick="a('3')">3</button>
-        <button onclick="a('.')">.</button>
-        <button onclick="a('0')">0</button>
-        <button class="eq" onclick="calc()">=</button>
+
+    <div class="tabs">
+        <div class="tab active" id="tab-buy" onclick="setMode('buy')">خرید درام</div>
+        <div class="tab" id="tab-sell" onclick="setMode('sell')">فروش درام</div>
     </div>
-</div>
+
+    <div class="card">
+        <h3>🏦 سفارش تبدیل ارز (AMD / تومان)</h3>
+        
+        <div class="input-group">
+            <label id="input-label">مبلغ به درام (AMD):</label>
+            <input type="number" id="amount-input" placeholder="مثلاً 10000">
+        </div>
+
+        <div class="input-group">
+            <label>شماره تماس / آیدی جهت هماهنگی:</label>
+            <input type="text" id="contact-input" placeholder="09123456789">
+        </div>
+
+        <button class="btn-submit" onclick="submitOrder()">ارسال سفارش به صرافی</button>
+    </div>
+
 <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
-    const d = document.getElementById('display');
-    function a(v) { d.value = d.value === '0' && v !== '.' ? v : d.value + v; }
-    function c() { d.value = '0'; }
-    function del() { d.value = d.value.length > 1 ? d.value.slice(0, -1) : '0'; }
-    function calc() { try { d.value = eval(d.value); } catch { d.value = 'خطا'; setTimeout(c, 1000); } }
+
+    let mode = 'buy';
+
+    function setMode(m) {
+        mode = m;
+        document.getElementById('tab-buy').classList.toggle('active', m === 'buy');
+        document.getElementById('tab-sell').classList.toggle('active', m === 'sell');
+    }
+
+    function submitOrder() {
+        const amount = document.getElementById('amount-input').value;
+        const contact = document.getElementById('contact-input').value;
+
+        if (!amount || amount <= 0) {
+            alert("لطفاً مقدار درام را وارد کنید.");
+            return;
+        }
+
+        const data = {
+            type: mode === 'buy' ? 'خرید درام از صرافی' : 'فروش درام به صرافی',
+            amount_amd: amount,
+            contact: contact
+        };
+
+        tg.sendData(JSON.stringify(data));
+    }
 </script>
 </body>
 </html>
