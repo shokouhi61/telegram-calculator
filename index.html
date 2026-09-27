@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>صرافی درام آنلاین</title>
+    <title>صرافی آنلاین ارمنستان</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: var(--tg-theme-bg-color, #f4f4f9);
-            --text-color: var(--tg-theme-text-color, #222222);
-            --btn-color: var(--tg-theme-button-color, #0088cc);
+            --bg-color: var(--tg-theme-bg-color, #17212b);
+            --text-color: var(--tg-theme-text-color, #ffffff);
+            --btn-color: var(--tg-theme-button-color, #2b5278);
             --btn-text: var(--tg-theme-button-text-color, #ffffff);
-            --card-bg: var(--tg-theme-secondary-bg-color, #ffffff);
-            --hint-color: var(--tg-theme-hint-color, #888888);
+            --card-bg: var(--tg-theme-secondary-bg-color, #202b36);
+            --hint-color: var(--tg-theme-hint-color, #7f91a4);
+            --accent-color: #64b5f6;
+            --success-color: #4caf50;
         }
 
         body {
@@ -20,29 +22,94 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 15px;
+            padding: 12px;
             box-sizing: border-box;
+            direction: rtl;
+        }
+
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--accent-color);
         }
 
         .card {
             background-color: var(--card-bg);
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        h3 {
+        .card-title {
             margin-top: 0;
-            font-size: 16px;
-            color: var(--btn-color);
+            margin-bottom: 10px;
+            font-size: 15px;
+            color: var(--accent-color);
             display: flex;
             align-items: center;
+            gap: 6px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .info-box span {
+            display: block;
+            font-size: 11px;
+            color: var(--hint-color);
+        }
+
+        .info-box strong {
+            font-size: 14px;
+            color: #fff;
+        }
+
+        .tabs {
+            display: flex;
             gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            background: var(--card-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            border-color: var(--accent-color);
+            background: var(--btn-color);
+            color: #fff;
         }
 
         .input-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            position: relative;
         }
 
         label {
@@ -56,11 +123,45 @@
             width: 100%;
             padding: 10px;
             border-radius: 8px;
-            border: 1px solid #ccc;
+            border: 1px solid rgba(255, 255, 255, 0.15);
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-size: 16px;
+            font-size: 15px;
             box-sizing: border-box;
+            outline: none;
+        }
+
+        .swap-btn {
+            display: block;
+            margin: 8px auto;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--accent-color);
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .calc-result {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px dashed var(--success-color);
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .calc-result span {
+            font-size: 12px;
+            color: var(--hint-color);
+        }
+
+        .calc-result strong {
+            display: block;
+            font-size: 16px;
+            color: var(--success-color);
+            margin-top: 4px;
         }
 
         .btn-submit {
@@ -70,88 +171,212 @@
             border-radius: 8px;
             background-color: var(--btn-color);
             color: var(--btn-text);
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
         }
 
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 10px;
-            text-align: center;
-            background: var(--card-bg);
-            border-radius: 8px;
+        .collapsible {
             cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            border: 1px solid transparent;
+            user-select: none;
         }
 
-        .tab.active {
-            border-color: var(--btn-color);
-            color: var(--btn-color);
+        .content {
+            display: none;
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--hint-color);
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-support {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 10px;
+            background: #24A1DE;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            box-sizing: border-box;
         }
     </style>
 </head>
 <body>
 
-    <div class="tabs">
-        <div class="tab active" id="tab-buy" onclick="setMode('buy')">خرید درام</div>
-        <div class="tab" id="tab-sell" onclick="setMode('sell')">فروش درام</div>
+    <div class="header">
+        <h2>🇦🇲 صرافی آنلاین ارمنستان 🦁☀️</h2>
     </div>
 
+    <!-- 1. بخش اعلام نرخ و موجودی -->
     <div class="card">
-        <h3>🏦 سفارش تبدیل ارز (AMD / تومان)</h3>
+        <div class="card-title">📊 نرخ‌های لحظه‌ای و موجودی صرافی</div>
+        <div class="grid-2" style="margin-bottom: 8px;">
+            <div class="info-box">
+                <span>خرید درام از شما</span>
+                <strong id="buy-rate">160 تومان</strong>
+            </div>
+            <div class="info-box">
+                <span>فروش درام به شما</span>
+                <strong id="sell-rate">168 تومان</strong>
+            </div>
+        </div>
+        <div class="grid-2">
+            <div class="info-box">
+                <span>موجودی درام</span>
+                <strong id="inv-amd">10,000,000 AMD</strong>
+            </div>
+            <div class="info-box">
+                <span>موجودی تومان</span>
+                <strong id="inv-toman">6,000,000,000 تومان</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. بخش تب خرید و فروش -->
+    <div class="tabs">
+        <div class="tab active" id="tab-buy" onclick="setMode('buy')">🛒 خرید درام از صرافی</div>
+        <div class="tab" id="tab-sell" onclick="setMode('sell')">💰 فروش درام به صرافی</div>
+    </div>
+
+    <!-- 3. فرم محاسبه‌گر و ثبت سفارش -->
+    <div class="card">
+        <div class="card-title">🔄 محاسبه‌گر و ثبت سفارش</div>
         
         <div class="input-group">
-            <label id="input-label">مبلغ به درام (AMD):</label>
-            <input type="number" id="amount-input" placeholder="مثلاً 10000">
+            <label id="input-label-from">مقدار ورودی (درام AMD):</label>
+            <input type="number" id="amount-input" placeholder="مثلاً 10000" oninput="calculate()">
         </div>
 
-        <div class="input-group">
-            <label>شماره تماس / آیدی جهت هماهنگی:</label>
-            <input type="text" id="contact-input" placeholder="09123456789">
+        <button class="swap-btn" onclick="toggleCurrency()">🔄 جابه‌جایی ارز (تومان ⇆ درام)</button>
+
+        <div class="input-group" style="margin-top: 8px;">
+            <label>درصد کارمزد پیش‌فرض:</label>
+            <input type="number" id="margin-input" value="5" oninput="calculate()">
         </div>
 
-        <button class="btn-submit" onclick="submitOrder()">ارسال سفارش به صرافی</button>
+        <div class="calc-result">
+            <span id="result-label">مبلغ تقریبی دریافتی / پرداختی:</span>
+            <strong id="calc-output">0 تومان</strong>
+        </div>
+
+        <div class="input-group" style="margin-top: 12px;">
+            <label>شماره تماس یا آیدی تلگرام جهت هماهنگی:</label>
+            <input type="text" id="contact-input" placeholder="09123456789 یا @username">
+        </div>
+
+        <button class="btn-submit" onclick="submitOrder()">🚀 ارسال نهایی سفارش</button>
+    </div>
+
+    <!-- 4. قوانین و مقررات -->
+    <div class="card collapsible" onclick="toggleRules()">
+        <div class="card-title">📜 قوانین و مقررات صرافی 📑</div>
+        <div class="content" id="rules-content">
+            ۱. تسویه حساب‌های ریالی پس از تایید فیش واریزی صورت می‌گیرد.<br>
+            ۲. تحویل درام در ایروان به صورت حضوری یا تحویل درب منزل انجام می‌شود.<br>
+            ۳. مدت زمان انجام سفارشات بین ۱۰ تا ۳۰ دقیقه است.<br>
+            ۴. احراز هویت برای خریدهای بالای مبالغ مشخص الزامی می‌باشد.
+        </div>
+    </div>
+
+    <!-- 5. دکمه پشتیبانی -->
+    <div style="margin-top: 10px;">
+        <a href="https://t.me/Shokouhi61" class="btn-support" target="_blank">💬 ارتباط با پشتیبانی آنلاین</a>
     </div>
 
 <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    let mode = 'buy';
+    let mode = 'buy'; // buy or sell
+    let currencyFrom = 'AMD'; // AMD or TOMAN
+    
+    // نرخ‌های پایه
+    const baseBuyRate = 160;
+    const baseSellRate = 168;
 
     function setMode(m) {
         mode = m;
         document.getElementById('tab-buy').classList.toggle('active', m === 'buy');
         document.getElementById('tab-sell').classList.toggle('active', m === 'sell');
+        calculate();
+    }
+
+    function toggleCurrency() {
+        currencyFrom = currencyFrom === 'AMD' ? 'TOMAN' : 'AMD';
+        document.getElementById('input-label-from').innerText = 
+            currencyFrom === 'AMD' ? 'مقدار ورودی (درام AMD):' : 'مقدار ورودی (تومان):';
+        calculate();
+    }
+
+    function calculate() {
+        const amount = parseFloat(document.getElementById('amount-input').value) || 0;
+        const margin = parseFloat(document.getElementById('margin-input').value) || 0;
+        
+        let baseRate = mode === 'buy' ? baseSellRate : baseBuyRate;
+        let effectiveRate = baseRate;
+
+        if (mode === 'buy') {
+            effectiveRate = baseRate * (1 + margin / 100);
+        } else {
+            effectiveRate = baseRate * (1 - margin / 100);
+        }
+
+        let result = 0;
+        let resultText = '';
+
+        if (currencyFrom === 'AMD') {
+            result = amount * effectiveRate;
+            resultText = `${Math.round(result).toLocaleString('fa-IR')} تومان`;
+        } else {
+            result = effectiveRate > 0 ? amount / effectiveRate : 0;
+            resultText = `${Math.round(result).toLocaleString('fa-IR')} درام (AMD)`;
+        }
+
+        document.getElementById('calc-output').innerText = resultText;
+    }
+
+    function toggleRules() {
+        const content = document.getElementById('rules-content');
+        content.style.display = content.style.display === 'block' ? 'none' : 'block';
     }
 
     function submitOrder() {
         const amount = document.getElementById('amount-input').value;
         const contact = document.getElementById('contact-input').value;
+        const margin = document.getElementById('margin-input').value;
+        const resultOutput = document.getElementById('calc-output').innerText;
 
         if (!amount || amount <= 0) {
-            alert("لطفاً مقدار درام را وارد کنید.");
+            alert("لطفاً مقدار ورودی را وارد کنید.");
+            return;
+        }
+
+        if (!contact) {
+            alert("لطفاً شماره تماس یا آیدی تلگرام را وارد کنید.");
             return;
         }
 
         const data = {
-            type: mode === 'buy' ? 'خرید درام از صرافی' : 'فروش درام به صرافی',
-            amount_amd: amount,
+            type: mode === 'buy' ? 'خرید درام' : 'فروش درام',
+            input_currency: currencyFrom,
+            amount: amount,
+            margin_percent: margin,
+            calculated_total: resultOutput,
             contact: contact
         };
 
         tg.sendData(JSON.stringify(data));
     }
+
+    calculate();
 </script>
 </body>
 </html>
