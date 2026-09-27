@@ -215,7 +215,7 @@
         <h2>🇦🇲 صرافی آنلاین ارمنستان 🦁☀️</h2>
     </div>
 
-    <!-- 1. بخش اعلام نرخ و موجودی -->
+    <!-- 1. اعلام نرخ و موجودی -->
     <div class="card">
         <div class="card-title">📊 نرخ‌های لحظه‌ای و موجودی صرافی</div>
         <div class="grid-2" style="margin-bottom: 8px;">
@@ -240,13 +240,13 @@
         </div>
     </div>
 
-    <!-- 2. بخش تب خرید و فروش -->
+    <!-- 2. تب خرید / فروش -->
     <div class="tabs">
         <div class="tab active" id="tab-buy" onclick="setMode('buy')">🛒 خرید درام از صرافی</div>
         <div class="tab" id="tab-sell" onclick="setMode('sell')">💰 فروش درام به صرافی</div>
     </div>
 
-    <!-- 3. فرم محاسبه‌گر و ثبت سفارش -->
+    <!-- 3. فرم محاسبه و ثبت سفارش -->
     <div class="card">
         <div class="card-title">🔄 محاسبه‌گر و ثبت سفارش</div>
         
@@ -286,7 +286,7 @@
         </div>
     </div>
 
-    <!-- 5. دکمه پشتیبانی -->
+    <!-- 5. پشتیبانی -->
     <div style="margin-top: 10px;">
         <a href="https://t.me/Shokouhi61" class="btn-support" target="_blank">💬 ارتباط با پشتیبانی آنلاین</a>
     </div>
@@ -295,10 +295,9 @@
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    let mode = 'buy'; // buy or sell
-    let currencyFrom = 'AMD'; // AMD or TOMAN
+    let mode = 'buy';
+    let currencyFrom = 'AMD';
     
-    // نرخ‌های پایه
     const baseBuyRate = 160;
     const baseSellRate = 168;
 
@@ -321,13 +320,7 @@
         const margin = parseFloat(document.getElementById('margin-input').value) || 0;
         
         let baseRate = mode === 'buy' ? baseSellRate : baseBuyRate;
-        let effectiveRate = baseRate;
-
-        if (mode === 'buy') {
-            effectiveRate = baseRate * (1 + margin / 100);
-        } else {
-            effectiveRate = baseRate * (1 - margin / 100);
-        }
+        let effectiveRate = mode === 'buy' ? baseRate * (1 + margin / 100) : baseRate * (1 - margin / 100);
 
         let result = 0;
         let resultText = '';
